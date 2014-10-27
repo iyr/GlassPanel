@@ -44,19 +44,19 @@ if [ $NM_STATUS = "active" ]
 	echo -e "[ \e[0;31mNetworking\e[0m ]" >> .tmpmotd
 fi
 
-#Detect WAN availability:
+#Detect Internet availability:
 GOOGLE_STATUS=$(ping -c4 google.com | awk 'NR == 8 {print $6}' | cut -c1)
 if [ $GOOGLE_STATUS -eq 0 ]
 	then
-	WAN_STATUS="true"
-	echo -e "[ \e[0;32mWAN\e[0m ]" >> .tmpmotd
+	INT_STATUS="true"
+	echo -e "[ \e[0;32mINT\e[0m ]" >> .tmpmotd
 	elif [ $GOOGLE_STATUS -gt 0  ]
 		then
-		WAN_STATUS="false"
-		echo -e "[ \e[1;33mWAN\e[0m ]" >> .tmpmotd
+		INT_STATUS="false"
+		echo -e "[ \e[1;33mINT\e[0m ]" >> .tmpmotd
 	else
-	WAN_STATUS="false"
-	echo -e "[ \e[0;31mWAN\e[0m ]" >> .tmpmotd
+	INT_STATUS="false"
+	echo -e "[ \e[0;31mINT\e[0m ]" >> .tmpmotd
 fi
 
 #Calculates the system memory usage as a rounded integer percentage and prints to a log
@@ -88,7 +88,7 @@ fi
 
 
 #Determine how many (if any) updates are available (yum only).
-if [ $WAN_STATUS = "false" ]
+if [ $INT_STATUS = "false" ]
 	then
 	echo -e "[ \e[0;31mYUM\e[0m ][ No connection to internet. ]" >> .tmpmotd
 	else
@@ -102,8 +102,3 @@ if [ $WAN_STATUS = "false" ]
 fi
 
 cat .tmpmotd
-
-#echo -e "[ \e[0;32mRAM\e[0m ][ %$AVE_MEM memory in use. ]"
-#echo "[ WAN ][00 01 02 03 04 04 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23]"
-#echo -e "[ \e[1;33mUPDATES\e[0m ][ $NUM_UPDATES available ]"
-#echo -e "[ \e[0;32mUPDATES\e[0m ][ $NUM_UPDATES available, System is up to date. ]"
