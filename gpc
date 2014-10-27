@@ -18,20 +18,21 @@ if [ -f "$SETTINGS" ]
 		echo "No configuration file found!"
 		echo "Generating settings file..."
 		#Generate Tweakable Settings file
-		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> .gpc_settings
-		echo "#Memory Settings:" >> .gpc_settings
-		echo "MODERATE_MEM=60" >> .gpc_settings
-		echo "CRITICAL_MEM=80" >> .gpc_settings
-		echo "#CPU Settings:" >> .gpc_settings
-		echo "MODERATE_CPU=60" >> .gpc_settings
-		echo "CRITICAL_CPU=80" >> .gpc_settings
-		echo " " >> .gpc_settings
+		echo "USER=$USER" >> /home/$USER/.gpc_settings
+		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> /home/$USER/.gpc_settings
+		echo "#Memory Settings:" >> /home/$USER/.gpc_settings
+		echo "MODERATE_MEM=60" >> /home/$USER/.gpc_settings
+		echo "CRITICAL_MEM=80" >> /home/$USER/.gpc_settings
+		echo "#CPU Settings:" >> /home/$USER/.gpc_settings
+		echo "MODERATE_CPU=60" >> /home/$USER/.gpc_settings
+		echo "CRITICAL_CPU=80" >> /home/$USER/.gpc_settings
+		echo " " >> /home/$USER/.gpc_settings
 		echo "break"
-		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> .gpc_settings
-		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> .gpc_settings
-		echo "#Example: SERVICE NetworkManager Networking" >> .gpc_settings
-		echo " " >> .gpc_settings
-		echo "#Environment Settings, do not edit." >> .gpc_settings
+		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> /home/$USER/.gpc_settings
+		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> /home/$USER/.gpc_settings
+		echo "#Example: SERVICE NetworkManager Networking" >> /home/$USER/.gpc_settings
+		echo " " >> /home/$USER/.gpc_settings
+		echo "#Environment Settings, do not edit." >> /home/$USER/.gpc_settings
 fi
 
 
