@@ -23,6 +23,8 @@ if [ -f "$SETTINGS" ]
 	else
 		echo "No configuration file found!"
 		echo "Detecting system..."
+		echo "Appending $USER's bash profile..."
+		echo "cat $MOTD" >> /home/$USER/.bash_profile
 		echo "Generating settings file for $USER..."
 		
 		#Generate Tweakable Settings file
