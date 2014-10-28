@@ -1,0 +1,18 @@
+-apt support
+
+-system memory logging
+-sub-routine to calculate average memory usage over time from memory logs
+-sub-routine to calculate linear regression of average memory usage over time 
+
+-system cpu usage logging
+-sub-routine to calculate average cpu usage over time
+-display cpu usage per-core; able to scale dynamically for various core-counts
+
+-system internet access logging
+-display internet status over past 24 hours from internet logs
+
+-root user support(?)
+
+-SELinux monitoring
+
+-website status monitoring

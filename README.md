@@ -10,4 +10,7 @@ The script itself is written entirely in bash with no calls to extraneous librar
 It should require no dependencies and work on minimalistic linux or unix based systems.
 
 "Set and Forget"
-The script should be run just once, with only a simple configuration file to adjust behavior.
+The script should be run just once, with only a simple configuration file to adjust behavior post initial execution.
+
+"Wash your hands on the way out"
+Should a user decide to uninstall gpc, all temporary, junk and configuration files should be removed such that the system is left in the state as it was pre-installation.
