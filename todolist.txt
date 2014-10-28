@@ -11,7 +11,7 @@
 -system internet access logging
 -display internet status over past 24 hours from internet logs
 
--root user support(?)
+-root user support(?) DONE
 -custom multi-user support DONE
 
 -SELinux monitoring
