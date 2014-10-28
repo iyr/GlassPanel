@@ -24,20 +24,20 @@ if [ -f "$SETTINGS" ]
 		echo "Generating settings file for $USER..."
 		
 		#Generate Tweakable Settings file
-		echo "USER=$USER" >> /home/$USER/.gpc_settings_$USER
-		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> /home/$USER/.gpc_settings_$USER
-		echo "#Memory Settings:" >> /home/$USER/.gpc_settings_$USER
-		echo "MODERATE_MEM=60" >> /home/$USER/.gpc_settings_$USER
-		echo "CRITICAL_MEM=80" >> /home/$USER/.gpc_settings_$USER
-		echo "#CPU Settings:" >> /home/$USER/.gpc_settings_$USER
-		echo "MODERATE_CPU=60" >> /home/$USER/.gpc_settings_$USER
-		echo "CRITICAL_CPU=80" >> /home/$USER/.gpc_settings_$USER
-		echo " " >> /home/$USER/.gpc_settings_$USER
-		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> /home/$USER/.gpc_settings_$USER
-		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> /home/$USER/.gpc_settings_$USER
-		echo "#Example: SERVICE NetworkManager Networking" >> /home/$USER/.gpc_settings_$USER
-		echo " " >> /home/$USER/.gpc_settings_$USER
-		echo "#Environment Settings, do not edit." >> /home/$USER/.gpc_settings_$USER
+		echo "USER=$USER" >> $SETTINGS
+		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
+		echo "#Memory Settings:" >> $SETTINGS
+		echo "MODERATE_MEM=60" >> $SETTINGS
+		echo "CRITICAL_MEM=80" >> $SETTINGS
+		echo "#CPU Settings:" >> $SETTINGS
+		echo "MODERATE_CPU=60" >> $SETTINGS
+		echo "CRITICAL_CPU=80" >> $SETTINGS
+		echo " " >> $SETTINGS
+		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
+		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
+		echo "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
+		echo " " >> $SETTINGS
+		echo "#Environment Settings, do not edit." >> $SETTINGS
 fi
 
 
