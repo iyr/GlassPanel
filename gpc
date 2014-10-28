@@ -108,4 +108,6 @@ if [ $INT_STATUS = "false" ]
 		fi
 fi
 
+#Determine status of SELinux and display how many (if any) alerts there are:
+
 cat $MOTD
