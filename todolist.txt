@@ -15,5 +15,7 @@
 -custom multi-user support DONE
 
 -SELinux monitoring
+-Primary Harddisk monitoring and percent change over time
+-options for extraneous disk monitoring
 
 -website status monitoring
