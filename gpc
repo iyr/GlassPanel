@@ -27,6 +27,12 @@ if [ -f "$SETTINGS" ]
 		
 		#Generate Tweakable Settings file
 		echo "USER=$USER" >> $SETTINGS
+		echo "\n" >> $SETTINGS
+		echo "#Insert a custom static header to the Glass Panel, if desired:" >> $SETTINGS
+		echo "HEADER=" >> $SETTINGS
+		echo "\n" >> $SETTINGS
+		echo "#Append a custom static footer to the Glass Panel, if desired:" >> $SETTINGS
+		echo "\n" >> $SETTINGS
 		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
 		echo "#Memory Settings:" >> $SETTINGS
 		echo "MODERATE_MEM=60" >> $SETTINGS
@@ -34,11 +40,11 @@ if [ -f "$SETTINGS" ]
 		echo "#CPU Settings:" >> $SETTINGS
 		echo "MODERATE_CPU=60" >> $SETTINGS
 		echo "CRITICAL_CPU=80" >> $SETTINGS
-		echo " " >> $SETTINGS
+		echo "\n" >> $SETTINGS
 		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
 		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
 		echo "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
-		echo " " >> $SETTINGS
+		echo "\n" >> $SETTINGS
 		echo "#Environment Settings, do not edit." >> $SETTINGS
 fi
 
