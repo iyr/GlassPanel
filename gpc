@@ -4,13 +4,13 @@
 
 #Detect Initial Setup
 USER=$(whoami)
+PACKAGE_MANAGER="YUM"
 
 #Remove temporary motd, if one already exists.
 if [ -f "/tmp/.tmpmotd_$USER" ]
 	then
 	rm /tmp/.tmpmotd_$USER
 fi
-
 
 SETTINGS="/home/$USER/.gpc_settings_$USER"
 if [ -f "$SETTINGS" ]
@@ -21,7 +21,8 @@ if [ -f "$SETTINGS" ]
 	else
 		echo "No configuration file found!"
 		echo "Detecting system..."
-		echo "Generating settings file..."
+		echo "Generating settings file for $USER..."
+		
 		#Generate Tweakable Settings file
 		echo "USER=$USER" >> /home/$USER/.gpc_settings_$USER
 		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> /home/$USER/.gpc_settings_$USER
@@ -65,44 +66,43 @@ if [ $GOOGLE_STATUS -eq 0 ]
 fi
 
 #Calculates the system memory usage as a rounded integer percentage and prints to a log
-AVE_MEM=$(free | awk 'NR == 3 {print $3} NR == 2 {print $2}' | paste -sd" " | awk 'NR ==1 {print $2/$1*100}' | awk '{printf("%d\n",$1 + 0.5)}')
-if [ $AVE_MEM -lt 60 ]
+CUR_MEM=$(free | awk 'NR == 3 {print $3} NR == 2 {print $2}' | paste -sd" " | awk 'NR ==1 {print $2/$1*100}' | awk '{printf("%d\n",$1 + 0.5)}')
+if [ $CUR_MEM -lt 60 ]
 	then
-	echo -e "[ \e[0;32mRAM\e[0m ][ \e[0;32m%$AVE_MEM\e[0m memory in use. ]" >> /tmp/.tmpmotd_$USER
+	echo -e "[ \e[0;32mRAM\e[0m ][ \e[0;32m%$CUR_MEM\e[0m memory in use ]" >> /tmp/.tmpmotd_$USER
 	
-	elif [ $AVE_MEM -ge 60 -a $AVE_MEM -lt 80 ]
+	elif [ $CUR_MEM -ge 60 -a $CUR_MEM -lt 80 ]
 	then
-	echo -e "[ \e[1;33mRAM\e[0m ][ \e[1;33m%$AVE_MEM\e[0m memory in use. ]" >> /tmp/.tmpmotd_$USER
+	echo -e "[ \e[1;33mRAM\e[0m ][ \e[1;33m%$CUR_MEM\e[0m memory in use ]" >> /tmp/.tmpmotd_$USER
 	
 	else
-	echo -e "[ \e[0;31mRAM\e[0m ][ \e[0;31m%$AVE_MEM\e[0m memory in use. ]" >> /tmp/.tmpmotd_$USER
+	echo -e "[ \e[0;31mRAM\e[0m ][ \e[0;31m%$CUR_MEM\e[0m memory in use ]" >> /tmp/.tmpmotd_$USER
 fi
 
 CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print $1}' | awk '{printf("%d\n",$1 + 0.5)}')
 if [ $CUR_CPU -lt 60 ]
         then
-        echo -e "[ \e[0;32mCPU\e[0m ][ \e[0;32m%$CUR_CPU\e[0m CPU in use. ]" >> /tmp/.tmpmotd_$USER
+        echo -e "[ \e[0;32mCPU\e[0m ][ \e[0;32m%$CUR_CPU\e[0m CPU in use ]" >> /tmp/.tmpmotd_$USER
 
         elif [ $CUR_CPU -ge 60 -a $CUR_CPU -lt 80 ]
         then
-	echo -e "[ \e[1;33mCPU\e[0m ][ \e[1;33m%$CUR_CPU\e[0m CPU in use. ]" >> /tmp/.tmpmotd_$USER
+	echo -e "[ \e[1;33mCPU\e[0m ][ \e[1;33m%$CUR_CPU\e[0m CPU in use ]" >> /tmp/.tmpmotd_$USER
 
         else
-        echo -e "[ \e[0;31mCPU\e[0m ][ \e[0;31m%$CUR_CPU\e[0m CPU in use. ]" >> /tmp/.tmpmotd_$USER
+        echo -e "[ \e[0;31mCPU\e[0m ][ \e[0;31m%$CUR_CPU\e[0m CPU in use ]" >> /tmp/.tmpmotd_$USER
 fi
 
-
-#Determine how many (if any) updates are available (yum only).
+#Determine how many (if any) updates are available.
 if [ $INT_STATUS = "false" ]
 	then
-	echo -e "[ \e[0;31mYUM\e[0m ][ No connection to internet. ]" >> /tmp/.tmpmotd_$USER
+	echo -e "[ \e[0;31m$PACKAGE_MANAGER\e[0m ][ No connection to internet ]" >> /tmp/.tmpmotd_$USER
 	else
 		NUM_UPDATES=$(yum check-update | grep -c "updates")
 		if [ $NUM_UPDATES -ne 0 ]
 			then
-			echo -e "[ \e[1;33mYUM\e[0m ][ $NUM_UPDATES updates available. ]" >> /tmp/.tmpmotd_$USER
+			echo -e "[ \e[1;33m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES updates available ]" >> /tmp/.tmpmotd_$USER
 			else
-			echo -e "[ \e[0;32mYUM\e[0m ][ $NUM_UPDATES updates available, System is up to date. ]" >> /tmp/.tmpmotd_$USER
+			echo -e "[ \e[0;32m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES updates available, System is up to date ]" >> /tmp/.tmpmotd_$USER
 		fi
 fi
 
