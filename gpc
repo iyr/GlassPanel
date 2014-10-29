@@ -133,8 +133,9 @@ fi
 #enforcing 	= green
 #permissive 	= yellow
 #disabled 	= red
-SEL_STATUS=$(sestatus | awk 'NR == 5 {print $3}')
-SEL_ALERTS=0
+SEL_STATUS=$(sestatus | awk 'NR == 6 {print $3}')
+SEL_ALERTS=$(sealert -l* | grep -c "denied") 
+
 if [ $SEL_STATUS = "enfocring" ]
 	then
 	echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
@@ -144,6 +145,5 @@ if [ $SEL_STATUS = "enfocring" ]
 	else
 	echo -e "[ \e[0;31mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
 fi
-echo $SEL_STATUS
 
 cat $MOTD

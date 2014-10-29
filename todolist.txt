@@ -15,7 +15,7 @@
 -custom multi-user support DONE
 
 -SELinux monitoring DONE
--SELinux alert status
+-SELinux alert status DONE(?)
 -Primary Harddisk monitoring and percent change over time
 -options for extraneous disk monitoring
 
