@@ -130,5 +130,20 @@ if [ $INT_STATUS = "false" ]
 fi
 
 #Determine status of SELinux and display how many (if any) alerts there are:
+#enforcing 	= green
+#permissive 	= yellow
+#disabled 	= red
+SEL_STATUS=$(sestatus | awk 'NR == 5 {print $3}')
+SEL_ALERTS=0
+if [ $SEL_STATUS = "enfocring" ]
+	then
+	echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+	elif [ $SEL_STATUS = "permissive" ]
+		then
+		echo -e "[ \e[1;33mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+	else
+	echo -e "[ \e[0;31mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+fi
+echo $SEL_STATUS
 
 cat $MOTD
