@@ -5,7 +5,7 @@
 -sub-routine to calculate linear regression of average memory usage over time 
 
 -system cpu usage logging
--sub-routine to calculate average cpu usage over time
+-sub-routine to calculate average cpu usage over time PARTIAL
 -display cpu usage per-core; able to scale dynamically for various core-counts
 
 -system internet access logging

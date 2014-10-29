@@ -37,9 +37,8 @@ if [ -f "$SETTINGS" ]
 			else
 				echo "cat $MOTD" >> /home/$USER/.bash_profile
 		fi
-		
-		echo "Generating settings file for $USER..."
-		
+
+		echo "Generating settings file for $USER..."		
 		#Generate Tweakable Settings file
 		echo "USER=$USER" >> $SETTINGS
 		echo "\n" >> $SETTINGS
@@ -103,6 +102,8 @@ if [ $CUR_MEM -lt 60 ]
 fi
 
 CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print $1}' | awk '{printf("%d\n",$1 + 0.5)}')
+#Possibly the least elegant way to calculate average cpu usage and normalize to cpu core count:
+AVE_CPU=$(echo "$(echo "($(uptime | awk '{print $10}') / $(cat /proc/cpuinfo | grep -c "processor")) * 100" | bc -l) / 1 " | bc)
 if [ $CUR_CPU -lt 60 ]
         then
         echo -e "[ \e[0;32mCPU\e[0m ][ \e[0;32m%$CUR_CPU\e[0m CPU in use ]" >> $MOTD
@@ -114,6 +115,7 @@ if [ $CUR_CPU -lt 60 ]
         else
         echo -e "[ \e[0;31mCPU\e[0m ][ \e[0;31m%$CUR_CPU\e[0m CPU in use ]" >> $MOTD
 fi
+echo $AVE_CPU
 
 #Determine how many (if any) updates are available.
 if [ $INT_STATUS = "false" ]
@@ -133,10 +135,10 @@ fi
 #enforcing 	= green
 #permissive 	= yellow
 #disabled 	= red
-SEL_STATUS=$(sestatus | awk 'NR == 6 {print $3}')
+SEL_STATUS=$(sestatus | awk 'NR == 5 {print $3}')
 SEL_ALERTS=$(sealert -l* | grep -c "denied") 
-
-if [ $SEL_STATUS = "enfocring" ]
+echo $SEL_STATUS
+if [ $SEL_STATUS = "enforcing" ]
 	then
 	echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
 	elif [ $SEL_STATUS = "permissive" ]
