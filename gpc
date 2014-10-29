@@ -137,15 +137,21 @@ fi
 #disabled 	= red
 SEL_STATUS=$(sestatus | awk 'NR == 5 {print $3}')
 SEL_ALERTS=$(sealert -l* | grep -c "denied") 
-echo $SEL_STATUS
+if [ $SEL_ALERTS -eq 0 ]
+	then
+	ALERT_COL="\e[0;32m"
+	else
+	ALERT_COL="\e[0;31m"
+fi
+
 if [ $SEL_STATUS = "enforcing" ]
 	then
-	echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+	echo -e "[ \e[0;32mSEL\e[0m ][ $ALERT_COL$SEL_ALERTS alerts\e[0m ]" >> $MOTD
 	elif [ $SEL_STATUS = "permissive" ]
 		then
-		echo -e "[ \e[1;33mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+		echo -e "[ \e[1;33mSEL\e[0m ][ $ALERT_COL$SEL_ALERTS alerts\e[0m ]" >> $MOTD
 	else
-	echo -e "[ \e[0;31mSEL\e[0m ][ $SEL_ALERTS alerts ]" >> $MOTD
+	echo -e "[ \e[0;31mSEL\e[0m ][ $ALERT_COL$SEL_ALERTS alerts\e[0m ]" >> $MOTD
 fi
 
 cat $MOTD
