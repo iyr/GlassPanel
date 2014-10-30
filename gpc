@@ -77,15 +77,16 @@ GOOGLE_STATUS=$(ping -c4 google.com | awk 'NR == 8 {print $6}' | cut -c1)
 if [ $GOOGLE_STATUS -eq 0 ]
 	then
 	INT_STATUS="true"
-	echo -e "[ \e[0;32mINT\e[0m ]" >> $MOTD
+	INT_COL="\e[0;32mINT\e[0m"
 	elif [ $GOOGLE_STATUS -gt 0  ]
 		then
 		INT_STATUS="false"
-		echo -e "[ \e[1;33mINT\e[0m ]" >> $MOTD
+		INT_COL="\e[1;33mINT\e[0m"
 	else
 	INT_STATUS="false"
-	echo -e "[ \e[0;31mINT\e[0m ]" >> $MOTD
+	INT_COL="\e[0;31mINT\e[0m"
 fi
+echo -e "[ $INT_COL ]" >> $MOTD
 
 #Calculates the system memory usage as a rounded integer percentage and prints to a log
 CUR_MEM=$(free | awk 'NR == 3 {print $3} NR == 2 {print $2}' | paste -sd" " | awk 'NR ==1 {print $2/$1*100}' | awk '{printf("%d\n",$1 + 0.5)}')
@@ -100,10 +101,9 @@ if [ $CUR_MEM -lt 60 ]
 	else
 	echo -e "[ \e[0;31mRAM\e[0m ][ \e[0;31m%$CUR_MEM\e[0m memory in use ]" >> $MOTD
 fi
-
 CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print $1}' | awk '{printf("%d\n",$1 + 0.5)}')
 #Possibly the least elegant way to calculate average cpu usage and normalize to cpu core count:
-AVE_CPU=$(echo "$(echo "($(uptime | awk '{print $10}') / $(cat /proc/cpuinfo | grep -c "processor")) * 100" | bc -l) / 1 " | bc)
+AVE_CPU=$(echo "$(echo "($(uptime | awk '{print $11}') / $(cat /proc/cpuinfo | grep -c "processor")) * 100" | bc -l) / 1 " | bc)
 if [ $CUR_CPU -lt 60 ]
         then
         echo -e "[ \e[0;32mCPU\e[0m ][ \e[0;32m%$CUR_CPU\e[0m CPU in use ]" >> $MOTD
