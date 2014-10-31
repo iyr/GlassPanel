@@ -1,4 +1,5 @@
 -apt support
+-error code handling
 
 -system memory logging
 -sub-routine to calculate average memory usage over time from memory logs
