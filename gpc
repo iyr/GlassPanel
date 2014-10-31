@@ -43,15 +43,23 @@ if [ -f "$SETTINGS" ]
 		echo -e "No configuration file found!"
 		echo -e "Detecting system..."
 		echo -e "Appending $USER's bash profile..."
-		
 		if [ $USER = "root" ]
 			then
+				sed -i '/cat \/tmp\/.tmpmotd_root/d' /root/.bash_profile
 				echo -e "cat $MOTD" >> /root/.bash_profile
 			else
+				sed -i "/cat \/tmp\/.tmpmotd_$USER/d" /home/$USER/.bash_profile
 				echo -e "cat $MOTD" >> /home/$USER/.bash_profile
 		fi
 
-		echo -e "Generating settings file for $USER..."		
+		#Add GlassPanel to user's crontab
+		#Method barrowed from http://stackoverflow.com/questions/878600
+		crontab -l > tmpcron
+		echo -e "*/30 * * * * /home/$USER/gpc" >> tmpcron
+		crontab tmpcron
+		rm tmpcron
+
+		echo -e "Generating settings file for $USER \b..."		
 		#Generate Tweakable Settings file
 		echo -e "USER=$USER" >> $SETTINGS
 		echo -e "#Insert a custom static header to the Glass Panel, if desired:" >> $SETTINGS

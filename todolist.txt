@@ -1,5 +1,6 @@
 -apt support
--error code handling
+-error code handling PARTIAL
+-append to user's crontab PARTIAL
 
 -system memory logging
 -sub-routine to calculate average memory usage over time from memory logs
