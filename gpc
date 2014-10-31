@@ -16,50 +16,59 @@ fi
 
 if [ $USER = "root" ]
 	then
-		SETTINGS="/root/.gpc_settings_root"
+		if [ -f "/root/.gpc_settings" ]
+		then
+			echo -e "Generic settings file found, configuring for root."
+			mv /root/.gpc_settings /root/.gpc_settings_root
+			SETTINGS="/root/.gpc_settings_root"
+		else
+			SETTINGS="/root/.gpc_settings_root"
+		fi
 	else
-		SETTINGS="/home/$USER/.gpc_settings_$USER"
+		if [ -f "/home/$USER/.gpc_settings" ]
+		then
+			echo -e "Generic settings file found, configuring for $USER \b."
+			mv /home/$USER/.gpc_settings /home/$USER/.gpc_settings_$USER
+			SETTINGS="/home/$USER/.gpc_settings_$USER"
+		else
+			SETTINGS="/home/$USER/.gpc_settings_$USER"
+		fi
 fi
 
 if [ -f "$SETTINGS" ]
 	then
-		echo "Configuration file detected for $USER!"
-		echo "Reading settings..."
-		
+		echo -e "Configuration file detected for $USER!"
+		echo -e "Reading settings..."
 	else
-		echo "No configuration file found!"
-		echo "Detecting system..."
-		echo "Appending $USER's bash profile..."
+		echo -e "No configuration file found!"
+		echo -e "Detecting system..."
+		echo -e "Appending $USER's bash profile..."
 		
 		if [ $USER = "root" ]
 			then
-				echo "cat $MOTD" >> /root/.bash_profile
+				echo -e "cat $MOTD" >> /root/.bash_profile
 			else
-				echo "cat $MOTD" >> /home/$USER/.bash_profile
+				echo -e "cat $MOTD" >> /home/$USER/.bash_profile
 		fi
 
-		echo "Generating settings file for $USER..."		
+		echo -e "Generating settings file for $USER..."		
 		#Generate Tweakable Settings file
-		echo "USER=$USER" >> $SETTINGS
-		echo "\n" >> $SETTINGS
-		echo "#Insert a custom static header to the Glass Panel, if desired:" >> $SETTINGS
-		echo "HEADER=" >> $SETTINGS
-		echo "\n" >> $SETTINGS
-		echo "#Append a custom static footer to the Glass Panel, if desired:" >> $SETTINGS
-		echo "\n" >> $SETTINGS
-		echo "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
-		echo "#Memory Settings:" >> $SETTINGS
-		echo "MODERATE_MEM=60" >> $SETTINGS
-		echo "CRITICAL_MEM=80" >> $SETTINGS
-		echo "#CPU Settings:" >> $SETTINGS
-		echo "MODERATE_CPU=60" >> $SETTINGS
-		echo "CRITICAL_CPU=80" >> $SETTINGS
-		echo "\n" >> $SETTINGS
-		echo "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
-		echo "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
-		echo "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
-		echo "\n" >> $SETTINGS
-		echo "#Environment Settings, do not edit." >> $SETTINGS
+		echo -e "USER=$USER" >> $SETTINGS
+		echo -e "#Insert a custom static header to the Glass Panel, if desired:" >> $SETTINGS
+		echo -e "HEADER=" >> $SETTINGS
+		echo -e "#Append a custom static footer to the Glass Panel, if desired:" >> $SETTINGS
+		echo -e "FOOTER=" >> $SETTINGS
+		echo -e "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
+		echo -e "#Memory Settings:" >> $SETTINGS
+		echo -e "MODERATE_MEM=60" >> $SETTINGS
+		echo -e "CRITICAL_MEM=80" >> $SETTINGS
+		echo -e "#CPU Settings:" >> $SETTINGS
+		echo -e "MODERATE_CPU=60" >> $SETTINGS
+		echo -e "CRITICAL_CPU=80" >> $SETTINGS
+		echo -e "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
+		echo -e "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
+		echo -e "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
+		echo -e "#Environment Settings, do not edit." >> $SETTINGS
 fi
 
 
@@ -103,7 +112,7 @@ echo -e "[ $CUR_MEM_COL \bRAM\e[0m ][ $CUR_MEM_COL \b%$CUR_MEM\e[0m memory in us
 
 CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print $1}' | awk '{printf("%d\n",$1 + 0.5)}')
 #Possibly the least elegant way to calculate average cpu usage and normalize to cpu core count:
-AVE_CPU=$(echo "$(echo "($(uptime | cut -d" " -f14) / $(cat /proc/cpuinfo | grep -c "processor")) * 100" | bc -l) / 1 " | bc)
+AVE_CPU=$(echo -e "$(echo -e "($(uptime | cut -d" " -f14) / $(cat /proc/cpuinfo | grep -c "processor")) * 100" | bc -l) / 1 " | bc)
 if [ $CUR_CPU -lt 60 ] && [ $AVE_CPU -lt 60 ]
         then
 	CPU_COL="\e[0;32m"
@@ -114,20 +123,26 @@ if [ $CUR_CPU -lt 60 ] && [ $AVE_CPU -lt 60 ]
 	CPU_COL="\e[0;31m"
 fi
 	
-echo -e "[ $CPU_COL \bCPU\e[0m ][ $CPU_COL \b%$CUR_CPU\e[0m CPU in use, $CPU_COL%$AVE_CPU\e[0m average past 15 minutes ]" >> $MOTD
+echo -e "[ $CPU_COL \bCPU\e[0m ][ $CPU_COL \b%$CUR_CPU\e[0m CPU in use, $CPU_COL%$AVE_CPU\e[0m ave 15m ]" >> $MOTD
 
 #Determine how many (if any) updates are available.
 if [ $INT_STATUS = "false" ]
 	then
 	echo -e "[ \e[0;31m$PACKAGE_MANAGER\e[0m ][ No connection to internet ]" >> $MOTD
 	else
-		NUM_UPDATES=$(yum check-update | grep -c "updates")
-		if [ $NUM_UPDATES -ne 0 ]
-			then
-			echo -e "[ \e[1;33m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES update(s) available ]" >> $MOTD
-			else
-			echo -e "[ \e[0;32m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES updates available, System is up to date ]" >> $MOTD
+		yum check-update > .gplog
+		if [ $? -ne 0 ]
+		then
+		echo -e "[ \e0;31m$PACKAGE_MANAGER\e[0m ][ $PACKAGE_MANAGER exited with error code $? ]" >> $MOTD
+		else
+		NUM_UPDATES=$(grep -c "updates" .gplog)
 		fi
+			if [ $NUM_UPDATES -ne 0 ]
+				then
+				echo -e "[ \e[1;33m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES update(s) available ]" >> $MOTD
+				else
+				echo -e "[ \e[0;32m$PACKAGE_MANAGER\e[0m ][ $NUM_UPDATES updates available, System is up to date ]" >> $MOTD
+			fi
 fi
 
 #Determine status of SELinux and display how many (if any) alerts there are:
