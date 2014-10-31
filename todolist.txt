@@ -6,7 +6,7 @@
 
 -system cpu usage logging
 -sub-routine to calculate average cpu usage over time PARTIAL
--display cpu usage per-core; able to scale dynamically for various core-counts
+-display cpu usage per-core; able to scale dynamically for various core-counts PARTIAL
 
 -system internet access logging
 -display internet status over past 24 hours from internet logs
