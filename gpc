@@ -154,3 +154,4 @@ if [ $SEL_STATUS = "enforcing" ]
 fi
 
 cat $MOTD
+exit 0
