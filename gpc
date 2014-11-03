@@ -139,9 +139,10 @@ if [ $INT_STATUS = "false" ]
 	echo -e "[ \e[0;31m$PACKAGE_MANAGER\e[0m ][ No connection to internet ]" >> $MOTD
 	else
 		yum check-update > .gplog
+		echo $?
 		if [ $? -ne 0 ]
 		then
-		echo -e "[ \e0;31m$PACKAGE_MANAGER\e[0m ][ $PACKAGE_MANAGER exited with error code $? ]" >> $MOTD
+		echo -e "[ \e[0;31m$PACKAGE_MANAGER\e[0m ][ $PACKAGE_MANAGER exited with error code $? ]" >> $MOTD
 		else
 		NUM_UPDATES=$(grep -c "updates" .gplog)
 		fi
