@@ -1,6 +1,7 @@
 -apt support
 -error code handling PARTIAL
 -append to user's crontab PARTIAL
+-actually use the settings file >_> PARTIAL
 
 -system memory logging
 -sub-routine to calculate average memory usage over time from memory logs
@@ -21,6 +22,6 @@
 -Primary Harddisk monitoring and percent change over time
 -options for extraneous disk monitoring
 
--website status monitoring(?)
+-website status monitoring(?) STARTED
 
 -clean up code ONGOING

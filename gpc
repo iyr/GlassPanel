@@ -66,6 +66,11 @@ if [ -f "$SETTINGS" ]
 		echo -e "HEADER=" >> $SETTINGS
 		echo -e "#Append a custom static footer to the Glass Panel, if desired:" >> $SETTINGS
 		echo -e "FOOTER=" >> $SETTINGS
+		echo -e "#Decide what default aspects of the system GlassPanel should monitor and display:" >> $SETTINGS
+		echo -e "INTERNET=true" >> $SETTINGS
+		echo -e "MEMORY=true" >> $SETTINGS
+		echo -e "CPU=true" >> $SETTINGS
+		echo -e "SELINUX=true" >> $SETTINGS
 		echo -e "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
 		echo -e "#Memory Settings:" >> $SETTINGS
 		echo -e "MODERATE_MEM=60" >> $SETTINGS
@@ -76,6 +81,9 @@ if [ -f "$SETTINGS" ]
 		echo -e "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
 		echo -e "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
 		echo -e "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
+		echo -e "#Allows you to append the status of selected websites to the motd (none enabled by default)" >> $SETTINGS
+		echo -e "#Usage: WEBSITE \"URL\" \"WebsiteAlias\" (no spaces in alias)" >> $SETTINGS
+		echo -e "#Example: WEBSITE google.com Google" >> $SETTINGS
 		echo -e "#Environment Settings, do not edit." >> $SETTINGS
 fi
 
