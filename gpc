@@ -113,7 +113,12 @@ if [ $GOOGLE_STATUS -eq 0 ]
 	INT_STATUS="false"
 	INT_COL="\e[0;31mINT\e[0m"
 fi
-echo -e "[ $INT_COL ]" >> $MOTD
+
+if [ $INTERNET = "true" ]
+	then
+	echo -e "[ $INT_COL ]" >> $MOTD
+fi
+
 
 #Calculates the system memory usage as a rounded integer percentage and prints to a log
 CUR_MEM=$(free | awk 'NR == 3 {print $3} NR == 2 {print $2}' | paste -sd" " | awk 'NR ==1 {print $2/$1*100}' | awk '{printf("%d\n",$1 + 0.5)}')
@@ -126,8 +131,11 @@ if [ $CUR_MEM -lt 60 ]
 	else
 	CUR_MEM_COL="\e0;31m"
 fi
-echo -e "[ $CUR_MEM_COL \bRAM\e[0m ][ $CUR_MEM_COL \b%$CUR_MEM\e[0m memory in use ]" >> $MOTD
 
+if [ $MEMORY = "true" ]
+	then
+	echo -e "[ $CUR_MEM_COL \bRAM\e[0m ][ $CUR_MEM_COL \b%$CUR_MEM\e[0m memory in use ]" >> $MOTD
+fi
 
 
 CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print $1}' | awk '{printf("%d\n",$1 + 0.5)}')
@@ -142,8 +150,12 @@ if [ $CUR_CPU -lt $MODERATE_CPU ] && [ $AVE_CPU -lt $MODERATE_CPU ]
         else
 	CPU_COL="\e[0;31m"
 fi
-	
-echo -e "[ $CPU_COL \bCPU\e[0m ][ $CPU_COL \b%$CUR_CPU\e[0m CPU in use, $CPU_COL%$AVE_CPU\e[0m ave 15m ]" >> $MOTD
+
+if [ $CPU = "true" ]
+	then
+	echo -e "[ $CPU_COL \bCPU\e[0m ][ $CPU_COL \b%$CUR_CPU\e[0m CPU in use, $CPU_COL%$AVE_CPU\e[0m ave 15m ]" >> $MOTD
+fi
+
 
 #Determine how many (if any) updates are available.
 if [ $INT_STATUS = "false" ]
@@ -178,15 +190,17 @@ if [ $SEL_ALERTS -eq 0 ]
 	SEL_ALERT_COL="\e[0;31m"
 fi
 
-if [ $SEL_STATUS = "enforcing" ]
+if [ $SELINUX = "true" ]
 	then
-	echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERT_COL$SEL_ALERTS alert(s)\e[0m ]" >> $MOTD
+	if [ $SEL_STATUS = "enforcing" ]
+		then
+		echo -e "[ \e[0;32mSEL\e[0m ][ $SEL_ALERT_COL$SEL_ALERTS alert(s)\e[0m ]" >> $MOTD
 	elif [ $SEL_STATUS = "permissive" ]
 		then
 		echo -e "[ \e[1;33mSEL\e[0m ][ $SEL_ALERT_COL$SEL_ALERTS alert(s)\e[0m ]" >> $MOTD
 	else
-	echo -e "[ \e[0;31mSEL\e[0m ][ $SEL_ALERT_COL$SEL_ALERTS alert(s)\e[0m ]" >> $MOTD
+		echo -e "[ \e[0;31mSEL\e[0m ][ $SEL_ALERT_COL$SEL_ALERTS alert(s)\e[0m ]" >> $MOTD
+	fi
 fi
-
 cat $MOTD
 exit 0

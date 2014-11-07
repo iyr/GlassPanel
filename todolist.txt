@@ -1,7 +1,6 @@
 -apt support
 -error code handling PARTIAL
 -append to user's crontab PARTIAL
--actually use the settings file >_> DONE
 
 -system memory logging
 -sub-routine to calculate average memory usage over time from memory logs
@@ -14,11 +13,6 @@
 -system internet access logging
 -display internet status over past 24 hours from internet logs
 
--root user support(?) DONE
--custom multi-user support DONE
-
--SELinux monitoring DONE
--SELinux alert status DONE(?)
 -Primary Harddisk monitoring and percent change over time
 -options for extraneous disk monitoring
 
