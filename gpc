@@ -40,7 +40,6 @@ if [ -f "$SETTINGS" ]
 		echo -e "Configuration file detected for $USER!"
 		echo -e "Reading settings..."
 		source $SETTINGS
-		echo $CRITICAL_MEM
 	else
 		echo -e "No configuration file found!"
 		echo -e "Detecting system..."
@@ -100,8 +99,12 @@ fi
 #	echo -e "[ \e[0;31mNetworking\e[0m ]" >> $MOTD
 #fi
 
+#Display overall system information
+echo -e "[ \e[0;32mSYS\e[0m ][ $(date) \e[0;32m-\e[0m Uptime: $(uptime | awk '{print $3}') \e[0;32m-\e[0m $HOSTNAME ]" >> $MOTD
+
 #Detect and monitor Internet availability:
 CUR_HOUR=$(date +"%H")
+CUR_MINUTE=$(date +"%M")
 if [ $CUR_HOUR = "00" ]
 	then rm .gplog; touch .gplog
 fi
@@ -111,23 +114,32 @@ if [ $GOOGLE_STATUS -eq 0 ]
 	then
 	INT_STATUS="true"
 	INT_COL="\e[0;32mINT\e[0m"
-	echo -ne "\e[0;32m$CUR_HOUR\e[0m" >> .gplog
+	if [ $CUR_MINUTE -lt 30 ]
+		then
+		echo -ne "\e[0;32m$CUR_HOUR \e[0m" >> .gplog
+	fi
 	elif [ $GOOGLE_STATUS -gt 0 ]
 		then
 		INT_STATUS="false"
 		INT_COL="\e[1;33mINT\e[0m"
-		echo -ne "\e[1;33m$CUR_HOUR\e[0m" >> .gplog
+		if [ $CUR_MINUTE -lt 30 ]
+			then
+			echo -ne "\e[1;33m$CUR_HOUR \e[0m" >> .gplog
+		fi
 	else
 	INT_STATUS="false"
 	INT_COL="\e[0;31mINT\e[0m"
-	echo -ne "\e[0;32m$CUR_HOUR\e[0m" >> .gplog
+	if [ $CUR_MINUTE -lt 30 ]
+		then
+		echo -ne "\e[0;32m$CUR_HOUR \e[0m" >> .gplog
+	fi
 fi
 
 #echo -e "\e[37;45m$CUR_HOUR\e[0m"
 
 if [ $INTERNET = "true" ]
 	then
-	echo -e "[ $INT_COL ][ $(cat .gplog) ]" >> $MOTD
+	echo -e "[ $INT_COL ][ $(cat .gplog)]" >> $MOTD
 fi
 
 
