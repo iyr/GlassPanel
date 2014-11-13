@@ -56,7 +56,12 @@ if [ -f "$SETTINGS" ]
 		#Add GlassPanel to user's crontab
 		#Method barrowed from http://stackoverflow.com/questions/878600
 		crontab -l > tmpcron
-		echo -e "*/30 * * * * /home/$USER/gpc" >> tmpcron
+		if [ $USER = "root" ]
+			then
+				echo -e "*/30 * * * * /root/gpc" >> tmpcron
+			else
+				echo -e "*/30 * * * * /home/$USER/gpc" >> tmpcron
+		fi
 		crontab tmpcron
 		rm tmpcron
 
@@ -102,9 +107,11 @@ fi
 #Display overall system information
 echo -e "[ \e[0;32mSYS\e[0m ][ $(date) \e[0;32m-\e[0m Uptime: $(uptime | awk '{print $3}') \e[0;32m-\e[0m $HOSTNAME ]" >> $MOTD
 
+#Calculate the amount of time that has elapsed since the last execution of the script
+LAST_EXEC=$(echo -e "$(date | awk '{print $4}' | cut -d ':' -f2) - $(cat /tmp/.tmpmotd_iyr | awk 'NR == 1 {print $7}' | cut -d ':' -f2)" | bc)
+
 #Detect and monitor Internet availability:
 CUR_HOUR=$(date +"%H")
-CUR_MINUTE=$(date +"%M")
 if [ $CUR_HOUR = "00" ]
 	then rm .gplog; touch .gplog
 fi
@@ -114,7 +121,7 @@ if [ $GOOGLE_STATUS -eq 0 ]
 	then
 	INT_STATUS="true"
 	INT_COL="\e[0;32mINT\e[0m"
-	if [ $CUR_MINUTE -lt 30 ]
+	if [ $LAST_EXEC -gt 30 ]
 		then
 		echo -ne "\e[0;32m$CUR_HOUR \e[0m" >> .gplog
 	fi
@@ -122,14 +129,14 @@ if [ $GOOGLE_STATUS -eq 0 ]
 		then
 		INT_STATUS="false"
 		INT_COL="\e[1;33mINT\e[0m"
-		if [ $CUR_MINUTE -lt 30 ]
+		if [ $LAST_EXEC -gt 30 ]
 			then
 			echo -ne "\e[1;33m$CUR_HOUR \e[0m" >> .gplog
 		fi
 	else
 	INT_STATUS="false"
 	INT_COL="\e[0;31mINT\e[0m"
-	if [ $CUR_MINUTE -lt 30 ]
+	if [ $LAST_EXEC -gt 30 ]
 		then
 		echo -ne "\e[0;32m$CUR_HOUR \e[0m" >> .gplog
 	fi
