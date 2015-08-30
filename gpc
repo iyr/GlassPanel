@@ -123,13 +123,7 @@ if [ -f "$SETTINGS" ]
 		echo -e "INTERNET=true" >> $SETTINGS
 		echo -e "MEMORY=true" >> $SETTINGS
 		echo -e "CPU=true" >> $SETTINGS
-		echo -e "#Adjust settings for color coding; below moderate is green, below critical is yellow and above is red" >> $SETTINGS
-		echo -e "#Memory Settings:" >> $SETTINGS
-		echo -e "MODERATE_MEM=60" >> $SETTINGS
-		echo -e "CRITICAL_MEM=80" >> $SETTINGS
-		echo -e "#CPU Settings:" >> $SETTINGS
-		echo -e "MODERATE_CPU=60" >> $SETTINGS
-		echo -e "CRITICAL_CPU=80" >> $SETTINGS
+		echo -e "DISK=true" >> $SETTINGS
 		echo -e "#Allows you to append the status of selected services to the motd (none enabled by default)" >> $SETTINGS
 		echo -e "#Usage: SERVICE \"ServiceName\" \"ServiceAlias\" (no spaces in alias)" >> $SETTINGS
 		echo -e "#Example: SERVICE NetworkManager Networking" >> $SETTINGS
@@ -218,7 +212,7 @@ CUR_MEM=$(free | awk 'NR == 2 {print $3} NR == 2 {print $2}' | paste -sd" " | aw
 if [ $CUR_MEM -lt 60 ]
 	then
 	CUR_MEM_COL="\e[0;32m"
-	elif [ $CUR_MEM -ge $MODERATE_MEM -a $CUR_MEM -lt $CRITICAL_MEM ]
+	elif [ $CUR_MEM -ge 60 -a $CUR_MEM -lt 80 ]
 	then
 	CUR_MEM_COL="\e[1;33m"
 	else
@@ -235,10 +229,10 @@ CUR_CPU=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '
 CPU_AVE_LOAD_15=$(uptime | awk 'NF > 1 {print $NF}')
 CPU_NUM_CORES=$(cat /proc/cpuinfo | grep -c "processor")
 AVE_CPU=$(echo -e "$(echo -e "($CPU_AVE_LOAD_15 / $CPU_NUM_CORES) * 100" | bc -l) / 1 " | bc)
-if (( $AVE_CPU < $MODERATE_CPU ))
+if [ $AVE_CPU -lt 60 ]
         then
 	CPU_COL="\e[0;32m"
-        elif [ $AVE_CPU -ge $MODERATE_CPU -a $AVE_CPU -lt $CRITICAL_CPU ] -o [ $AVE_CPU -lt $CRITICAL_CPU ]
+        elif [ $AVE_CPU -ge 60 -a $AVE_CPU -lt 80 ] -o [ $AVE_CPU -lt 80 ]
         then
 	CPU_COL="\e[1;33m"
         else
@@ -247,6 +241,20 @@ fi
 	echo -e "[ $CPU_COL \bCPU\e[0m ][ $CPU_COL%$AVE_CPU\e[0m ave 15m ]" >> $MOTD
 }
 
+function CHECK_DISK {
+CUR_DISK=$(df -h | awk 'NR == 2 {print $5}' | cut -c1,2)
+FREEH=$(df -h | awk 'NR == 2 {print $4}')
+if [ $CUR_DISK -lt 60 ]
+	then
+	DISK_COL="\e[0;32m"
+	elif [ $CUR_DISK -ge 60 -a $CUR_DISK -lt 80 ] -o [ $CUR_DISK -lt 80 ]
+	then
+	DISK_COL="\e[1;33m"
+	else
+	DISK_COL="\e[0;31m"
+fi
+	echo -e "[ $DISK_COL \bDSK\e[0m ][ $DISK_COL%$CUR_DISK\e[0m, $FREEH free on primary disk ]" >> $MOTD
+}
 
 #Determine how many (if any) updates are available. Disabled because yum check-update is behaving oddly.
 
@@ -276,6 +284,7 @@ fi
 if [ $INTERNET = "true" ]; then	CHECK_WAN; fi
 if [ $MEMORY = "true" ]; then CHECK_MEM; fi 
 if [ $CPU = "true" ]; then CHECK_CPU; fi
+if [ $DISK = "true" ]; then CHECK_DISK; fi
 #if [ $UPDATES = "true" ] && [ $INTERNET = "true" ]; then CHECK_YUM; fi
 
 cat $MOTD
