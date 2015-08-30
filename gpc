@@ -45,7 +45,9 @@ if [ -f "$SETTINGS" ]
 	then
 		echo -e "Configuration file detected for $USER!"
 		echo -e "Reading settings..."
-		source $SETTINGS
+		awk 'NR >= 0 && NR <= 20' $SETTINGS > /home/$USER/.gpart
+		source /home/$USER/.gpart
+		rm /home/$USER/.gpart
 	else
 		echo -e "No configuration file found!"
 		echo -e "Detecting system..."
@@ -128,6 +130,7 @@ echo -ne "\n" >> .gplog
 if [ $CUR_HOUR = "00"  ]
 	then
 	rm .gplog
+	echo -ne "\n" >> .gplog
 fi
 
 
@@ -147,7 +150,7 @@ if [ $GOOGLE_STATUS -eq 0 ]
 		echo "hello from if 1"
 		awk -v OFS=" " 'NR == 1 { $(NF+1)="[0;32m$CUR_HOUR[0m" };1' .gplog > newerfile && cat newerfile > .gplog && rm newerfile
 	fi
-elif [ $GOOGLE_STATUS -gt 0 ]
+elif [ $GOOGLE_STATUS -lt 4 ]
 	then
 	INT_STATUS="false"
 	INT_COL="\e[1;33mINT\e[0m"
