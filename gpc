@@ -92,10 +92,11 @@ if [ -f "$SETTINGS" ]
 
 		#Check if bc is installed
 		if [ -e "/usr/bin/bc" ]
-		then
-		else
-			echo "bc not installed, GlassPanel needs bc to function. Halting"
-			exit 1
+			then
+				echo "bc detected, proceeding"
+			else
+				echo "bc not installed, GlassPanel needs bc to function. Halting"
+				exit 1
 		fi
 
 		#Add GlassPanel to user's crontab
