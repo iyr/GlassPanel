@@ -14,6 +14,7 @@ if [ "$1" = "-u" ]
 	rm .gplog
 	echo "Removing User crontab entry. . ."
 	echo "Removing Message call. . ."
+	exit 0
 fi
 
 #Calculate the amount of time that has elapsed since the last execution of the script
@@ -62,13 +63,16 @@ if [ -f "$SETTINGS" ]
 		echo -e "No configuration file found!"
 		echo -e "Detecting system..."
 		echo -e "Appending $USER's bash profile..."
+		echo -e 'run "gpc -u" to uninstall.'
 		if [ $USER = "root" ]
 			then
 				sed -i '/cat \/tmp\/.tmpmotd_root/d' /root/.bash_profile
 				echo -e "cat $MOTD" >> /root/.bash_profile
+				echo -e "Configuration file written to /root/.gpc_settings_root"
 			else
 				sed -i "/cat \/tmp\/.tmpmotd_$USER/d" /home/$USER/.bash_profile
 				echo -e "cat $MOTD" >> /home/$USER/.bash_profile
+				echo -e "Configuration file written to /home/$USER/.gpc_settings_$USER"
 		fi
 
 		#Determine if System is using systemd or sysvinit
